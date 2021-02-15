@@ -1,313 +1,132 @@
-#terraform {
-#required_version = ">= 0.13.5"
-
-#required_providers {
-#google = {
-#source  = "hashicorp/google"
-#version = "~> 3.52.0"
-#}
-
-#google-beta = {
-#source  = "hashicorp/google-beta"
-#version = "~> 3.52.0"
-#}
-#}
-#}
-
-#provider "google" {
-#credentials = file(var.key)
-#project = var.google_project
-#region = var.region 
-#zone = var.zone
-#}
-
-
-
-#resource "google_storage_bucket" "bucket" {
-resource "google_storage_bucket" "static-site" {
-  #  name = "bucket-detect-tn"
-  name                        = "bucket.detect.tn"
-  location                    = "australia-southeast1"
-  storage_class               = "STANDARD"
-  force_destroy               = true
-  uniform_bucket_level_access = false
-  website {
-    main_page_suffix = "index.html"
-    #not_found_page   = "404.html"
-  }
+############################# Bucket configuration #############################
+# The default network tier to be configured for the project
+resource "google_compute_project_default_network_tier" "default" {
+  network_tier = "PREMIUM"
 }
 
-#resource "google_storage_bucket_object" "object" {
-#name   = "index.html"
-## bucket = google_storage_bucket.bucket.name
-#bucket = google_storage_bucket.static-site.name
-#source = "website-files/index.html"
-##source = "git::https://github.com/Ahmed-Amine-Soltani/markdown-language-demo.git"
-##content = "images"
-#}
-
-#resource "null_resource" "upload_folder_content" {
-  #triggers = {
-    #file_hashes = jsonencode({
-      #for fn in fileset(var.folder_path, "**") :
-      #fn => filesha256("${var.folder_path}/${fn}")
-    #})
-  #}
-
-  #provisioner "local-exec" {
-    #command = "./google-cloud-sdk/bin/gsutil cp -r ${var.folder_path}/* gs://${google_storage_bucket.static-site.name}/"
-  #}
-
-#}
-
-
-#resource "google_storage_default_object_access_control" "public_rule" {
-##bucket = google_storage_bucket.bucket.name
-#bucket = google_storage_bucket.static-site.name
-#role   = "READER"
-#entity = "allUsers"
-#}
-
-
-
-
-resource "google_storage_bucket_iam_member" "member" {
-  bucket = google_storage_bucket.static-site.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
-}
-
-
-
-
-
-
-resource "google_compute_global_forwarding_rule" "default" {
-  name                  = "global-rule"
-  target                = google_compute_target_https_proxy.default.id
-  port_range            = "443"
-  load_balancing_scheme = "EXTERNAL"
-  ip_address            = google_compute_global_address.default.address
-  #ip_version = "ipv4"
-  #network_tier          = "PREMIUM"
-}
-
-// ********************** a revoir si je dois utilisé http ou https proxy 
-resource "google_compute_target_https_proxy" "default" {
-  name             = "test-proxy"
-  url_map          = google_compute_url_map.default.id
-  ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
-}
-
-resource "google_compute_managed_ssl_certificate" "default" {
-  name = "test-cert"
-
-  managed {
-    domains = [google_dns_record_set.a.name]
-  }
-}
-
-
-#resource "google_compute_target_http_proxy" "default" {
-#name        = "target-proxy"
-#description = "a description"
-#url_map     = google_compute_url_map.default.id
-#}
-
-resource "google_compute_url_map" "default" {
-  name            = "url-map-target-proxy"
-  description     = "a description"
-  default_service = google_compute_backend_bucket.default.id
-
-  #  host_rule {
-  #hosts        = [google_dns_record_set.a.name]
-  #path_matcher = "allpaths"
-  #}
-
-  #path_matcher {
-  #name            = "allpaths"
-  #default_service = google_compute_backend_bucket.default.id
-
-  #path_rule {
-  #paths   = ["/*"]
-  #service = google_compute_backend_bucket.default.id
-  #}
-  #}
-}
-
-
-
-
-resource "google_compute_backend_bucket" "default" {
-  name        = "image-backend-bucket"
-  description = "Contains beautiful images"
-  bucket_name = google_storage_bucket.static-site.name
-  #enable_cdn  = true
-}
-
-
-
-
-
-
-
-
-
-
-resource "google_compute_global_forwarding_rule" "default2" {
-  name                  = "website-forwarding-rule"
-  load_balancing_scheme = "EXTERNAL"
-  port_range            = 80
-  target                = google_compute_target_http_proxy.default.id
-  ip_address            = google_compute_global_address.default.address
-}
-
-
-resource "google_compute_target_http_proxy" "default" {
-  name    = "test-proxy"
-  url_map = google_compute_url_map.default2.id
-}
-
-resource "google_compute_url_map" "default2" {
-  name = "url-map"
-  default_url_redirect {
-    https_redirect = true
-    strip_query    = false
-    #redirect_response_code = "TEMPORARY_REDIRECT"
-  }
-
-  #  host_rule {
-  #hosts        = ["*"]
-  #path_matcher = "allpaths"
-  #}
-
-  #path_matcher {
-  #name            = "allpaths"
-
-
-  #path_rule {
-  #paths   = ["/*"]
-
-  #}
-  #}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Reserve an external IP
 resource "google_compute_global_address" "default" {
-  name = "global-appserver-ip"
+  name         = "static-website-lb-ip"
+  address_type = "EXTERNAL"
 }
-// ****************** normally the name will be and input **** 
+
+# Get the managed DNS zone
 data "google_dns_managed_zone" "default" {
   name = var.google_dns_managed_zone_name
 }
 
-// ********************* the name must be and input **********
+# Add the IP to the DNS
 resource "google_dns_record_set" "a" {
-  #name         = "lb.ahmedamine-soltani.lab.innovorder.dev.detect.tn."
   name         = format("%s.%s", var.dns_name, data.google_dns_managed_zone.default.dns_name)
   managed_zone = data.google_dns_managed_zone.default.name
   type         = "A"
   ttl          = 300
+  rrdatas      = [google_compute_global_address.default.address]
+}
 
-  rrdatas = [google_compute_global_address.default.address]
+# www to non-www redirect
+resource "google_dns_record_set" "cname" {
+  name         = format("%s.%s.%s", "www", var.dns_name, data.google_dns_managed_zone.default.dns_name)
+  managed_zone = data.google_dns_managed_zone.default.name
+  type         = "CNAME"
+  ttl          = 300
+  rrdatas      = [format("%s.%s", var.dns_name, data.google_dns_managed_zone.default.dns_name)]
+}
 
+
+############################# Bucket configuration #############################
+# Bucket to store website
+resource "google_storage_bucket" "default" {
+  name          = var.google_storage_bucket
+  location      = "US"
+  storage_class = "STANDARD"
+  force_destroy = true
+}
+
+# Make new objects public
+resource "google_storage_bucket_iam_member" "member" {
+  bucket = google_storage_bucket.default.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
+
+############################# LoadBalancer and CDN creation #############################
+# GCP forwarding rule
+resource "google_compute_global_forwarding_rule" "static-website" {
+  name                  = "static-website-forwarding-rule"
+  target                = google_compute_target_https_proxy.static-website.id
+  port_range            = "443"
+  ip_protocol           = "TCP"
+  load_balancing_scheme = "EXTERNAL"
+  ip_address            = google_compute_global_address.default.address
+}
+
+
+# GCP target proxy
+resource "google_compute_target_https_proxy" "static-website" {
+  name             = "static-website-https-proxy"
+  url_map          = google_compute_url_map.static-website.id
+  ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
+}
+
+# Create HTTPS certificate
+resource "google_compute_managed_ssl_certificate" "default" {
+  name = "static-website-cert"
+
+  managed {
+    domains = [
+      google_dns_record_set.a.name,
+      google_dns_record_set.cname.name
+    ]
+  }
+}
+
+# GCP URL MAP
+resource "google_compute_url_map" "static-website" {
+  name            = "url-map-https-target-proxy"
+  description     = "a description"
+  default_service = google_compute_backend_bucket.default.id
+}
+
+# Add the bucket as a CDN backend
+resource "google_compute_backend_bucket" "default" {
+  name        = "static-website-backend-bucket"
+  description = "Contains beautiful images"
+  bucket_name = google_storage_bucket.default.name
+  enable_cdn  = true
+}
+
+############################# HTTP-to-HTTPS redirect for HTTP(S) Load Balancing ############################
+# GCP forwarding rule http to https
+resource "google_compute_global_forwarding_rule" "static-website-forwording" {
+  name                  = "static-website-http-to-https-forwarding-rule"
+  load_balancing_scheme = "EXTERNAL"
+  port_range            = 80
+  target                = google_compute_target_http_proxy.static-website-forwording.id
+  ip_address            = google_compute_global_address.default.address
+}
+
+# GCP target prox http to https
+resource "google_compute_target_http_proxy" "static-website-forwording" {
+  name    = "static-website-http-proxy"
+  url_map = google_compute_url_map.static-website-forwording.id
+}
+
+# GCP target prox http to https
+resource "google_compute_url_map" "static-website-forwording" {
+  name = "url-map-http-target-proxy"
+  default_url_redirect {
+    https_redirect = true
+    strip_query    = false
+  }
 }
 
 
 
 
 
-#data "github_branch" "dummy" {
-
-## http_clone_url = "https://github.com/Ahmed-Amine-Soltani/pipeline-ci-cd.git"
-#repository = "pipeline-ci-cd"
-#branch     = "master"
-#}
 
 
 
 
 
-#resource "github_repository" "example" {
-#name        = "example"
-#description = "My awesome codebase"
-
-#http_clone_url = "https://github.com/Ahmed-Amine-Soltani/pipeline-ci-cd.git"
-
-#}
-
-
-
-
-#resource "google_storage_default_object_access_control" "public_rule" {
-##bucket = google_storage_bucket.bucket.name
-#bucket = google_storage_bucket.static-site.name
-#role   = "READER"
-#entity = "allUsers"
-#}
-
-
-
-
-#resource "google_storage_bucket_iam_member" "member" {
-#bucket = google_storage_bucket.static-site.name
-#role = "roles/storage.admin"
-#member = "allUsers"
-#}
-
-
-
-
-#resource "google_compute_network" "vpc_network" {
-#name = "terraform-network" 
-#}
-
-#terraform {
-#  backend "gcs" {
-#    bucket = "terraformtests"
-#    prefix = "terraform1"
-#    credentials = "probable-byway-303616-ab9027296709.json"
-#   }
-#}
-
-
-
-#resource "google_compute_instance" "vm_instance" {
-#name         = "terraform-instance"
-#machine_type = "f1-micro"
-
-#boot_disk {
-#initialize_params {
-#image = "debian-cloud/debian-9"
-#}
-#}
-
-#network_interface {
-#network = google_compute_network.vpc_network.name
-#access_config {
-#}
-#}
-#}
-#resource "google_compute_address" "static_ip" {
-#name = "terraform-static-ip"
-#}
