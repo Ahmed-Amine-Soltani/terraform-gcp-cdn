@@ -36,16 +36,21 @@ resource "google_dns_record_set" "cname" {
 
 ############################# Bucket configuration #############################
 # Bucket to store website
-resource "google_storage_bucket" "default" {
+resource "google_storage_bucket" "bucket" {
   name          = var.google_storage_bucket
-  location      = "US"
-  storage_class = "STANDARD"
-  force_destroy = true
+  location                    = "australia-southeast1"
+  storage_class               = "STANDARD"
+  force_destroy               = true
+  uniform_bucket_level_access = false
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "404.html"
+  }
 }
 
 # Make new objects public
 resource "google_storage_bucket_iam_member" "member" {
-  bucket = google_storage_bucket.default.name
+  bucket = google_storage_bucket.bucket.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
 }
@@ -92,7 +97,7 @@ resource "google_compute_url_map" "static-website" {
 resource "google_compute_backend_bucket" "default" {
   name        = "static-website-backend-bucket"
   description = "Contains beautiful images"
-  bucket_name = google_storage_bucket.default.name
+  bucket_name = google_storage_bucket.bucket.name
   enable_cdn  = true
 }
 
