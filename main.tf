@@ -1,4 +1,4 @@
-############################# Bucket configuration #############################
+############################# Network configuration #############################
 # The default network tier to be configured for the project
 resource "google_compute_project_default_network_tier" "default" {
   network_tier = "PREMIUM"
