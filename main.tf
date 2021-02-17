@@ -37,7 +37,7 @@ resource "google_dns_record_set" "cname" {
 ############################# Bucket configuration #############################
 # Bucket to store website
 resource "google_storage_bucket" "bucket" {
-  name          = var.google_storage_bucket
+  name                        = var.google_storage_bucket
   location                    = "australia-southeast1"
   storage_class               = "STANDARD"
   force_destroy               = true
