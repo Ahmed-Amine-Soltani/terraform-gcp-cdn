@@ -39,5 +39,5 @@ Before starting you’ll need some pre-existing configurations:
 
 architecture
 
-![](.images/Architecture.png)
+<img src="https://i.ibb.co/8P7g9v7/gcp-cdn-architecture.png" alt="gcp-cdn-architecture" border="0" />
 
