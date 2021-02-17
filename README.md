@@ -43,7 +43,7 @@ architecture
 
 the steps to use the module 
 
-```
+```hcl
 terraform {
   required_version = ">= 0.13.5"
 
