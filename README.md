@@ -149,6 +149,8 @@ LoadBalancer and CDN creation
 
 we finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
 
+<img src="https://i.ibb.co/YBh7vRY/load-balancer.png" alt="load-balancer" border="0">
+
 ```hcl
 # GCP forwarding rule
 resource "google_compute_global_forwarding_rule" "static-website" {
