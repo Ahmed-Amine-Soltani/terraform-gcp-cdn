@@ -244,9 +244,11 @@ The ressources that will be created in your project:
 
 
 
-Publish the website
+#### Publish the website
 
 you can use the gcp coensole 
+
+
 
 <img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
 
@@ -260,11 +262,12 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 
 
-Test the website
+#### Test the website
 
-Now let’s check if everything is working as it should. Let’s open the URL
+Check if everything is working as it should.
 
 <img src=.images/test-the-website.png alt="gcp-cdn-architecture" border="0" />
 
 
 
+<img src=.images/not-found-page.png alt="gcp-cdn-architecture" border="0" />
