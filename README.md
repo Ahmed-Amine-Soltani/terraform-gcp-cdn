@@ -266,7 +266,7 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 Check if everything is working as it should.
 
-<img src=.images/test-the-website.png alt="gcp-cdn-architecture" border="0" />
+<img src=.images/test-the-website-prefix.png alt="gcp-cdn-architecture" border="0" />
 
 
 
