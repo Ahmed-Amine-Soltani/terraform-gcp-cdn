@@ -1,20 +1,14 @@
 
 
-Setting up a CDN on GCP via Terraform 
-
-
+# Setting up a CDN on GCP via Terraform 
 
 
 
 <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/v/tag/Ahmed-Amine-Soltani/terraform-gcp-cdn">
 
-This module allows you to setting up a CDN on GCP 
-
-This module allow you to host a static website on Cloud Storage bucket for a domain you own behind a CDN on [Google Cloud Platform Provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
 
 
-
-
+#### Requirements
 
 Before starting you’ll need some pre-existing configurations:
 
@@ -28,17 +22,11 @@ Before starting you’ll need some pre-existing configurations:
 
 
 
-architecture
 
-<img src="https://i.ibb.co/8P7g9v7/gcp-cdn-architecture.png" alt="gcp-cdn-architecture" border="0" />
 
-the steps to use the module 
-
-Prepare Terraform
+#### Prepare Terraform
 
 You need to configure your Terraform to use the GCP and GCP beta  provider first . Don’t forget to  change your variables
-
-
 
 ```hcl
 terraform {
@@ -75,7 +63,7 @@ provider "google-beta" {
 
 
 
-Bucket configuration
+#### Bucket configuration
 
 We need then to create a GCS bucket to host our static files. the bucket name must be a syntactically valid DNS name verified . Examples of valid domain-named buckets include `example.com`, `buckets.example.com`  . The `main_page_suffix` is set to `index.html` and `not_found_page` is set to `404.html`
 
@@ -103,7 +91,7 @@ resource "google_storage_bucket_iam_member" "member" {
 
 
 
-Network configuration
+#### Network configuration
 
 We also need to create a new IP address, and add it in our DNS, so we’ll be able to get HTTPS certificates later. 
 
@@ -145,11 +133,11 @@ resource "google_dns_record_set" "cname" {
 
 
 
-LoadBalancer and CDN creation
+#### LoadBalancer and CDN creation
 
 we finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
 
-<img src="https://i.ibb.co/YBh7vRY/load-balancer.png" alt="load-balancer" border="0">
+<img src=.images/load-balancer.png alt="load-balancer" border="0">
 
 ```hcl
 # GCP forwarding rule
@@ -228,13 +216,9 @@ resource "google_compute_url_map" "static-website-forwording" {
 
 
 
+#### Architecture
 
-
-
-
-## Requirements
-
-These sections describe requirements for using this module.
+<img src=.images/architecture.png alt="gcp-cdn-architecture" border="0" />
 
 
 
@@ -247,4 +231,40 @@ The ressources that will be created in your project:
 - A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) 
 - A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-http-lb)
 - A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+Publish the website
+
+you can use the gcp coensole 
+
+<img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
+
+
+
+or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) you can use 
+
+```bash
+$ gsutil cp -r folder-path/* gs://bucket-name/
+```
+
+
+
+Test the website
+
+Now let’s check if everything is working as it should. Let’s open the URL
+
+
+
+
 
