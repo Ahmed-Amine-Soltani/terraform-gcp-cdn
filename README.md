@@ -264,7 +264,7 @@ Test the website
 
 Now let’s check if everything is working as it should. Let’s open the URL
 
-
+<img src=.images/test-the-website.png alt="gcp-cdn-architecture" border="0" />
 
 
 
