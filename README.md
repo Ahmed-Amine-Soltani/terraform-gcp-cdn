@@ -66,7 +66,7 @@ Then perform the following commands on the root folder:
 | google_dns_managed_zone_name                | your google managed zone name.                               | `string` | ""                     | yes      |
 | google_storage_bucket_name                  | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
 | google_storage_bucket.location              | where the bucket data will be permanently stored.            | `string` | "australia-southeast1" | no       |
-| google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed | `string` | "STANDARD"             | no       |
+| google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed. | `string` | "STANDARD"             | no       |
 | google_storage_bucket.force_destroy         | When deleting a bucket, this boolean option will delete all contained objects. | `bool`   | true                   | no       |
 | google_storage_bucket.main_page_suffix      | the main page suffix behaves as the bucket's directory index. | `string` | "index.html            | no       |
 | google_storage_bucket.not_found_page        | he custom object to return when a requested resource is not found. | `string` | "404.html"             | no       |
@@ -79,9 +79,9 @@ Then perform the following commands on the root folder:
 
 | Name                  | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
-| dns_managed_zone_name | your google managed zone name                                |
-| lb_fqdn               | the FQDN of your load balancer with which you access your website |
-| external_ip_reserved  | the ip address which will be mapped to the FQDN in the configuration of your gcp public zone |
+| dns_managed_zone_name | your google managed zone name.                               |
+| lb_fqdn               | the FQDN of your load balancer with which you access your website. |
+| external_ip_reserved  | the ip address which will be mapped to the FQDN in the configuration of your gcp public zone. |
 
 
 
