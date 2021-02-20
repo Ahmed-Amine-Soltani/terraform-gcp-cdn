@@ -1,13 +1,13 @@
 ############################# Network configuration #############################
 # The default network tier to be configured for the project
 resource "google_compute_project_default_network_tier" "default" {
-  network_tier = "PREMIUM"
+  network_tier = var.google_compute_project_default_network_tier
 }
 
 # Reserve an external IP
 resource "google_compute_global_address" "default" {
   name         = "static-website-lb-ip"
-  address_type = "EXTERNAL"
+  address_type = var.google_compute_global_address
 }
 
 # Get the managed DNS zone
@@ -37,14 +37,14 @@ resource "google_dns_record_set" "cname" {
 ############################# Bucket configuration #############################
 # Bucket to store website
 resource "google_storage_bucket" "bucket" {
-  name                        = var.google_storage_bucket
-  location                    = "australia-southeast1"
-  storage_class               = "STANDARD"
-  force_destroy               = true
-  uniform_bucket_level_access = false
+  name          = var.google_storage_bucket_name
+  location      = var.google_storage_bucket[0].location
+  storage_class = var.google_storage_bucket[0].storage_class
+  force_destroy = var.google_storage_bucket[0].force_destroy
+  #uniform_bucket_level_access = var.google_storage_bucket.uniform_bucket_level_access
   website {
-    main_page_suffix = "index.html"
-    not_found_page   = "404.html"
+    main_page_suffix = var.google_storage_bucket[0].main_page_suffix
+    not_found_page   = var.google_storage_bucket[0].not_found_page
   }
 }
 
@@ -69,7 +69,7 @@ resource "google_compute_global_forwarding_rule" "static-website" {
 
 # GCP target proxy
 resource "google_compute_target_https_proxy" "static-website" {
-  name             = "static-website-https-proxy"
+  name             = "static-website-cert"
   url_map          = google_compute_url_map.static-website.id
   ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
 }
@@ -105,8 +105,9 @@ resource "google_compute_backend_bucket" "default" {
 # GCP forwarding rule http to https
 resource "google_compute_global_forwarding_rule" "static-website-forwording" {
   name                  = "static-website-http-to-https-forwarding-rule"
+  port_range            = "80"
+  ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
-  port_range            = 80
   target                = google_compute_target_http_proxy.static-website-forwording.id
   ip_address            = google_compute_global_address.default.address
 }

@@ -42,6 +42,8 @@ module "cdn" {
 }
 ```
 
+
+
 Then perform the following commands on the root folder:
 
 - `terraform init` to get the plugins
@@ -62,7 +64,7 @@ Then perform the following commands on the root folder:
 | :--------------------------- | ----------- | -------- | -------- |
 | dns_name                     | string      | `string` | yes      |
 | google_dns_managed_zone_name | string      | `string` | yes      |
-| google_storage_bucket        | string      | `string` | yes      |
+| google_storage_bucket_name   | string      | `string` | yes      |
 
 ##### Outputs
 
