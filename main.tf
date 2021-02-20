@@ -89,14 +89,12 @@ resource "google_compute_managed_ssl_certificate" "default" {
 # GCP URL MAP
 resource "google_compute_url_map" "static-website" {
   name            = "url-map-https-target-proxy"
-  description     = "a description"
   default_service = google_compute_backend_bucket.default.id
 }
 
 # Add the bucket as a CDN backend
 resource "google_compute_backend_bucket" "default" {
   name        = "static-website-backend-bucket"
-  description = "Contains beautiful images"
   bucket_name = google_storage_bucket.bucket.name
   enable_cdn  = true
 }

@@ -1,31 +1,31 @@
 variable "google_compute_project_default_network_tier" {
   type        = string
-  description = "The dns name to create which point to the CDN"
+  description = "The default network tier to be configured for the project. This field can take the following values: PREMIUM or STANDARD."
   default     = "PREMIUM"
 }
 
 variable "google_compute_global_address_type" {
   type        = string
-  description = "The dns name to create which point to the CDN"
+  description = "The type of the address to reserve."
   default     = "EXTERNAL"
 }
 
 
 variable "dns_name" {
   type        = string
-  description = "The dns name to create which point to the CDN"
+  description = "this dns_name will be concatenated with the domain name of your public zone to create the FQDN of your load balancer."
   default     = ""
 }
 
 variable "google_dns_managed_zone_name" {
   type        = string
-  description = "The name of the Google DNS Managed Zone where the DNS will be created"
+  description = "your google managed zone name."
   default     = ""
 }
 
 variable "google_storage_bucket_name" {
   type        = string
-  description = "bucket name"
+  description = "the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name."
   default     = ""
 }
 
