@@ -44,13 +44,13 @@ module "cdn" {
 
 Then perform the following commands on the root folder:
 
-- [`terraform init`](#terraform init) to get the plugins
+- `terraform init` to get the plugins
 
-- [`terraform plan`](#terraform plan) to see the infrastructure plan
+- `terraform plan` to see the infrastructure plan
 
-- [`terraform apply`](#terraform apply) to apply the infrastructure build
+- `terraform apply` to apply the infrastructure build
 
-- [`terraform destroy`](#terraform destroy) to destroy the built infrastructure
+- `terraform destroy` to destroy the built infrastructure
 
   
 
