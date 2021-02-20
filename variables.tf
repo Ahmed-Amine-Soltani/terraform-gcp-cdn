@@ -4,7 +4,7 @@ variable "google_compute_project_default_network_tier" {
   default     = "PREMIUM"
 }
 
-variable "google_compute_global_address" {
+variable "google_compute_global_address_type" {
   type        = string
   description = "The dns name to create which point to the CDN"
   default     = "EXTERNAL"

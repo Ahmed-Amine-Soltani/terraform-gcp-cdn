@@ -60,11 +60,19 @@ Then perform the following commands on the root folder:
 
 ------
 
-| Name                         | Description                                                  | Type     | Required |
-| :--------------------------- | ------------------------------------------------------------ | -------- | -------- |
-| dns_name                     | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer | `string` | yes      |
-| google_dns_managed_zone_name | your google managed zone name                                | `string` | yes      |
-| google_storage_bucket_name   | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | yes      |
+| Name                                              | Description                                                  | Type     | Default                | Required |
+| :------------------------------------------------ | ------------------------------------------------------------ | -------- | ---------------------- | -------- |
+| dns_name                                          | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer | `string` | ""                     | yes      |
+| google_dns_managed_zone_name                      | your google managed zone name                                | `string` | ""                     | yes      |
+| google_storage_bucket_name                        | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
+| google_storage_bucket.location                    |                                                              | `string` | "australia-southeast1" | no       |
+| google_storage_bucket.storage_class               |                                                              | `string` | TANDARD"               | no       |
+| google_storage_bucket.force_destroy               |                                                              | `bool`   | true                   | no       |
+| google_storage_bucket.uniform_bucket_level_access |                                                              | `bool`   | false                  | no       |
+| google_storage_bucket.main_page_suffix            |                                                              | `string` | "index.html            | no       |
+| google_storage_bucket.not_found_page              |                                                              | `string` | "404.html"             | no       |
+| google_compute_project_default_network_tier       |                                                              | `string` | "PREMIUM"              | no       |
+| google_compute_global_address_type                |                                                              | `string` | "EXTERNAL"             | no       |
 
 ##### Outputs
 

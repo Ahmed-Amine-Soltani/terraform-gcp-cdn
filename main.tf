@@ -7,7 +7,7 @@ resource "google_compute_project_default_network_tier" "default" {
 # Reserve an external IP
 resource "google_compute_global_address" "default" {
   name         = "static-website-lb-ip"
-  address_type = var.google_compute_global_address
+  address_type = var.google_compute_global_address_type
 }
 
 # Get the managed DNS zone
