@@ -36,9 +36,9 @@ You can go to the examples folder, however the usage of the module could be like
 module "cdn" {
   source  = "Ahmed-Amine-Soltani/cdn/gcp"
   version = "1.0.0"
-  dns_name                     = var.dns_name
-  google_dns_managed_zone_name = var.google_dns_managed_zone_name
-  google_storage_bucket        = var.google_storage_bucket
+  dns_name                     = "example"
+  google_dns_managed_zone_name = "my-global-dns-managed-zone-name"
+  google_storage_bucket_name        = "example.bucket.mydnsname.com"
 }
 ```
 
@@ -74,6 +74,7 @@ Then perform the following commands on the root folder:
 | --------------------- | ----------- |
 | dns_managed_zone_name |             |
 | lb_fqdn               |             |
+| external_ip_reserved  |             |
 
 
 

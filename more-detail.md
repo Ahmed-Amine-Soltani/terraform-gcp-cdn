@@ -8,6 +8,10 @@
 
 
 
+[TOC]
+
+
+
 #### Requirements
 
 Before starting you’ll need some pre-existing configurations:
@@ -25,6 +29,8 @@ Before starting you’ll need some pre-existing configurations:
 
 
 #### Prepare Terraform
+
+------
 
 You need to configure your Terraform to use the GCP and GCP beta  provider first . Don’t forget to  change your variables
 
@@ -65,12 +71,14 @@ provider "google-beta" {
 
 #### Bucket configuration
 
+------
+
 We need then to create a GCS bucket to host our static files. the bucket name must be a syntactically valid DNS name verified . Examples of valid domain-named buckets include `example.com`, `buckets.example.com`  . The `main_page_suffix` is set to `index.html` and `not_found_page` is set to `404.html`
 
 ```hcl
 # Bucket to store website
 resource "google_storage_bucket" "bucket" {
-  name                        = var.google_storage_bucket
+  name                        = var.google_storage_bucket_name
   location                    = "australia-southeast1"
   storage_class               = "STANDARD"
   force_destroy               = true
@@ -92,6 +100,8 @@ resource "google_storage_bucket_iam_member" "member" {
 
 
 #### Network configuration
+
+------
 
 We also need to create a new IP address, and add it in our DNS, so we’ll be able to get HTTPS certificates later. 
 
@@ -134,6 +144,8 @@ resource "google_dns_record_set" "cname" {
 
 
 #### LoadBalancer and CDN creation
+
+------
 
 we finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
 
@@ -216,13 +228,47 @@ resource "google_compute_url_map" "static-website-forwording" {
 
 
 
+#### Variables 
+
+------
+
+
+
+```hcl
+variable "dns_name" {
+  type        = string
+  description = "The dns name to create which point to the CDN"
+  default     = "lb"
+}
+
+variable "google_dns_managed_zone_name" {
+  type        = string
+  description = "The name of the Google DNS Managed Zone where the DNS will be created"
+  default     = "ahmedamine-soltani-lab-innovorder-dev"
+}
+
+variable "google_storage_bucket_name" {
+  type        = string
+  description = "bucket name"
+  default     = "test.detect.tn"
+}
+```
+
+
+
+
+
+
+
 #### Architecture
+
+------
 
 <img src=.images/architecture.png alt="gcp-cdn-architecture" border="0" />
 
+------
 
-
-The ressources that will be created in your project:
+The **ressources** that will be created in your project:
 
 - An external IP address  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) [link](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static)
 
@@ -234,17 +280,13 @@ The ressources that will be created in your project:
 
 
 
-
-
 #### Publish the website
+
+------
 
 you can use the gcp console 
 
-
-
 <img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
-
-
 
 or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) you can use 
 
@@ -255,6 +297,8 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 
 #### Test the website
+
+------
 
 Check if everything is working as it should.
 

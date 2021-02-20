@@ -31,25 +31,21 @@ variable "google_storage_bucket_name" {
 
 variable "google_storage_bucket" {
   type = list(object({
-    location         = string
-    storage_class    = string
-    force_destroy    = bool
-    main_page_suffix = string
-    not_found_page   = string
+    location                    = string
+    storage_class               = string
+    force_destroy               = bool
+    uniform_bucket_level_access = bool
+    main_page_suffix            = string
+    not_found_page              = string
   }))
   default = [
     {
-      location         = "australia-southeast1"
-      storage_class    = "STANDARD"
-      force_destroy    = true
-      main_page_suffix = "index.html"
-      not_found_page   = "404.html"
+      location                    = "australia-southeast1"
+      storage_class               = "STANDARD"
+      force_destroy               = true
+      uniform_bucket_level_access = false
+      main_page_suffix            = "index.html"
+      not_found_page              = "404.html"
     }
   ]
 }
-
-
-
-
-
-
