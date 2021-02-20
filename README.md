@@ -60,19 +60,18 @@ Then perform the following commands on the root folder:
 
 ------
 
-| Name                                              | Description                                                  | Type     | Default                | Required |
-| :------------------------------------------------ | ------------------------------------------------------------ | -------- | ---------------------- | -------- |
-| dns_name                                          | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer | `string` | ""                     | yes      |
-| google_dns_managed_zone_name                      | your google managed zone name                                | `string` | ""                     | yes      |
-| google_storage_bucket_name                        | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
-| google_storage_bucket.location                    |                                                              | `string` | "australia-southeast1" | no       |
-| google_storage_bucket.storage_class               |                                                              | `string` | TANDARD"               | no       |
-| google_storage_bucket.force_destroy               |                                                              | `bool`   | true                   | no       |
-| google_storage_bucket.uniform_bucket_level_access |                                                              | `bool`   | false                  | no       |
-| google_storage_bucket.main_page_suffix            |                                                              | `string` | "index.html            | no       |
-| google_storage_bucket.not_found_page              |                                                              | `string` | "404.html"             | no       |
-| google_compute_project_default_network_tier       |                                                              | `string` | "PREMIUM"              | no       |
-| google_compute_global_address_type                |                                                              | `string` | "EXTERNAL"             | no       |
+| Name                                        | Description                                                  | Type     | Default                | Required |
+| :------------------------------------------ | ------------------------------------------------------------ | -------- | ---------------------- | -------- |
+| dns_name                                    | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer. | `string` | ""                     | yes      |
+| google_dns_managed_zone_name                | your google managed zone name.                               | `string` | ""                     | yes      |
+| google_storage_bucket_name                  | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
+| google_storage_bucket.location              | where the bucket data will be permanently stored.            | `string` | "australia-southeast1" | no       |
+| google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed | `string` | "STANDARD"             | no       |
+| google_storage_bucket.force_destroy         | When deleting a bucket, this boolean option will delete all contained objects. | `bool`   | true                   | no       |
+| google_storage_bucket.main_page_suffix      | the main page suffix behaves as the bucket's directory index. | `string` | "index.html            | no       |
+| google_storage_bucket.not_found_page        | he custom object to return when a requested resource is not found. | `string` | "404.html"             | no       |
+| google_compute_project_default_network_tier | Network Service Tiers lets you optimize connectivity between systems on the internet and your Google Cloud instances. Premium Tier delivers traffic on Google's premium backbone. | `string` | "PREMIUM"              | no       |
+| google_compute_global_address_type          | Use global external addresses for GFE-based external HTTP(S) load balancers in Premium Tier. | `string` | "EXTERNAL"             | no       |
 
 ##### Outputs
 
