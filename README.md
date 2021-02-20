@@ -1,6 +1,6 @@
 
 
-# <p align="center"> Setting up a CDN on GCP via Terraform </p> 
+# <p align="center"> Terraform CDN Module </p> 
 
 
 
@@ -10,237 +10,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Requirements
-
-Before starting you’ll need some pre-existing configurations:
-
-- An existing GCP account linked to a billing account
-- An existing GCP project
-- A service account with a key
-- Terraform installed and configured on your machine
-- A domain name managed in Cloud DNS (Public Zone)
-- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
-- Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
-
-
-
-
-
-#### Prepare Terraform
-
-You need to configure your Terraform to use the GCP and GCP beta  provider first . Don’t forget to  change your variables
-
-```hcl
-terraform {
-  required_version = ">= 0.13.5"
-
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 3.52.0"
-    }
-
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = "~> 3.52.0"
-    }
-  }
-}
-
-# GCP provider
-provider "google" {
-  credentials = file(var.key)
-  project     = var.google_project
-  region      = var.region
-  zone        = var.zone
-}
-
-# GCP beta provider
-provider "google-beta" {
-  credentials = file(var.key)
-  project     = var.google_project
-  region      = var.region
- } 
-```
-
-
-
-#### Bucket configuration
-
-We need then to create a GCS bucket to host our static files. the bucket name must be a syntactically valid DNS name verified . Examples of valid domain-named buckets include `example.com`, `buckets.example.com`  . The `main_page_suffix` is set to `index.html` and `not_found_page` is set to `404.html`
-
-```hcl
-# Bucket to store website
-resource "google_storage_bucket" "bucket" {
-  name                        = var.google_storage_bucket
-  location                    = "australia-southeast1"
-  storage_class               = "STANDARD"
-  force_destroy               = true
-  uniform_bucket_level_access = false
-  website {
-    main_page_suffix = "index.html"
-    not_found_page   = "404.html"
-  }
-}
-
-# Make new objects public
-resource "google_storage_bucket_iam_member" "member" {
-  bucket = google_storage_bucket.bucket.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
-}
-```
-
-
-
-#### Network configuration
-
-We also need to create a new IP address, and add it in our DNS, so we’ll be able to get HTTPS certificates later. 
-
-```hcl
-# The default network tier to be configured for the project
-resource "google_compute_project_default_network_tier" "default" {
-  network_tier = "PREMIUM"
-}
-
-# Reserve an external IP
-resource "google_compute_global_address" "default" {
-  name         = "static-website-lb-ip"
-  address_type = "EXTERNAL"
-}
-
-# Get the managed DNS zone
-data "google_dns_managed_zone" "default" {
-  name = var.google_dns_managed_zone_name
-}
-
-# Add the IP to the DNS
-resource "google_dns_record_set" "a" {
-  name         = format("%s.%s", var.dns_name, data.google_dns_managed_zone.default.dns_name)
-  managed_zone = data.google_dns_managed_zone.default.name
-  type         = "A"
-  ttl          = 300
-  rrdatas      = [google_compute_global_address.default.address]
-}
-
-# www to non-www redirect
-resource "google_dns_record_set" "cname" {
-  name         = format("%s.%s.%s", "www", var.dns_name, data.google_dns_managed_zone.default.dns_name)
-  managed_zone = data.google_dns_managed_zone.default.name
-  type         = "CNAME"
-  ttl          = 300
-  rrdatas      = [format("%s.%s", var.dns_name, data.google_dns_managed_zone.default.dns_name)]
-}
-```
-
-
-
-#### LoadBalancer and CDN creation
-
-we finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
-
-<img src=.images/load-balancer.png alt="load-balancer" border="0">
-
-```hcl
-# GCP forwarding rule
-resource "google_compute_global_forwarding_rule" "static-website" {
-  name                  = "static-website-forwarding-rule"
-  target                = google_compute_target_https_proxy.static-website.id
-  port_range            = "443"
-  ip_protocol           = "TCP"
-  load_balancing_scheme = "EXTERNAL"
-  ip_address            = google_compute_global_address.default.address
-}
-
-
-# GCP target proxy
-resource "google_compute_target_https_proxy" "static-website" {
-  name             = "static-website-https-proxy"
-  url_map          = google_compute_url_map.static-website.id
-  ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
-}
-
-# Create HTTPS certificate
-resource "google_compute_managed_ssl_certificate" "default" {
-  name = "static-website-cert"
-
-  managed {
-    domains = [
-      google_dns_record_set.a.name,
-      google_dns_record_set.cname.name
-    ]
-  }
-}
-
-# GCP URL MAP
-resource "google_compute_url_map" "static-website" {
-  name            = "url-map-https-target-proxy"
-  description     = "a description"
-  default_service = google_compute_backend_bucket.default.id
-}
-
-# Add the bucket as a CDN backend
-resource "google_compute_backend_bucket" "default" {
-  name        = "static-website-backend-bucket"
-  description = "Contains beautiful images"
-  bucket_name = google_storage_bucket.bucket.name
-  enable_cdn  = true
-}
-```
-
-HTTP LoadBalancer to redirect the traffic to your HTTPS load balancer.
-
-```hcl
-# GCP forwarding rule http to https
-resource "google_compute_global_forwarding_rule" "static-website-forwording" {
-  name                  = "static-website-http-to-https-forwarding-rule"
-  load_balancing_scheme = "EXTERNAL"
-  port_range            = 80
-  target                = google_compute_target_http_proxy.static-website-forwording.id
-  ip_address            = google_compute_global_address.default.address
-}
-
-# GCP target prox http to https
-resource "google_compute_target_http_proxy" "static-website-forwording" {
-  name    = "static-website-http-proxy"
-  url_map = google_compute_url_map.static-website-forwording.id
-}
-
-# GCP target prox http to https
-resource "google_compute_url_map" "static-website-forwording" {
-  name = "url-map-http-target-proxy"
-  default_url_redirect {
-    https_redirect = true
-    strip_query    = false
-  }
-}
-```
-
-
-
-#### Architecture
-
-<img src=.images/architecture.png alt="gcp-cdn-architecture" border="0" />
+This modules makes it easy to host a static website on Cloud Storage bucket for a domain you own behind a CDN .
 
 
 
@@ -258,30 +28,72 @@ The ressources that will be created in your project:
 
 
 
-#### Publish the website
+#### Usage
 
-you can use the gcp console 
+You can go to the examples folder, however the usage of the module could be like this in your own main.tf file:
 
-
-
-<img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
-
-
-
-or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) you can use 
-
-```bash
-$ gsutil cp -r folder-path/* gs://bucket-name/
+```hcl
+module "cdn" {
+  source  = "Ahmed-Amine-Soltani/cdn/gcp"
+  version = "1.0.0"
+  dns_name                     = var.dns_name
+  google_dns_managed_zone_name = var.google_dns_managed_zone_name
+  google_storage_bucket        = var.google_storage_bucket
+}
 ```
 
+Then perform the following commands on the root folder:
+
+- [`terraform init`](#terraform init) to get the plugins
+
+- [`terraform plan`](#terraform plan) to see the infrastructure plan
+
+- [`terraform apply`](#terraform apply) to apply the infrastructure build
+
+- [`terraform destroy`](#terraform destroy) to destroy the built infrastructure
+
+  
+
+##### Inputs
+
+------
+
+| Name                         | Description | Type     | Required |
+| :--------------------------- | ----------- | -------- | -------- |
+| dns_name                     | string      | `string` | yes      |
+| google_dns_managed_zone_name | string      | `string` | yes      |
+| google_storage_bucket        | string      | `string` | yes      |
+
+##### Outputs
+
+------
+
+| Name                  | Description |
+| --------------------- | ----------- |
+| dns_managed_zone_name |             |
+| lb_fqdn               |             |
 
 
-#### Test the website
 
-Check if everything is working as it should.
+##### Requirements
 
-<img src=.images/test-the-website-prefix.png alt="gcp-cdn-architecture" border="0" />
+------
+
+Before starting you’ll need some pre-existing configurations:
+
+- An existing GCP account linked to a billing account
+- An existing GCP project
+- A service account with a key
+- Terraform installed and configured on your machine
+- A domain name managed in Cloud DNS (Public Zone)
+- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
+- Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 
 
 
-<img src=.images/not-found-page.png alt="gcp-cdn-architecture" border="0" />
+##### Enable API's
+
+------
+
+In order to operate with the Service Account you must activate the following API on the project where the Service Account was created:
+
