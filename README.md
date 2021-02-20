@@ -37,8 +37,8 @@ module "cdn" {
   source  = "Ahmed-Amine-Soltani/cdn/gcp"
   version = "1.0.0"
   dns_name                     = "example"
-  google_dns_managed_zone_name = "my-global-dns-managed-zone-name"
-  google_storage_bucket_name        = "example.bucket.mydnsname.com"
+  google_dns_managed_zone_name = "my-google-dns-managed-zone-name"
+  google_storage_bucket_name   = "example.bucket.mydnsname.com"
 }
 ```
 
@@ -60,21 +60,21 @@ Then perform the following commands on the root folder:
 
 ------
 
-| Name                         | Description | Type     | Required |
-| :--------------------------- | ----------- | -------- | -------- |
-| dns_name                     | string      | `string` | yes      |
-| google_dns_managed_zone_name | string      | `string` | yes      |
-| google_storage_bucket_name   | string      | `string` | yes      |
+| Name                         | Description                                                  | Type     | Required |
+| :--------------------------- | ------------------------------------------------------------ | -------- | -------- |
+| dns_name                     | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer | `string` | yes      |
+| google_dns_managed_zone_name | your google managed zone name                                | `string` | yes      |
+| google_storage_bucket_name   | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | yes      |
 
 ##### Outputs
 
 ------
 
-| Name                  | Description |
-| --------------------- | ----------- |
-| dns_managed_zone_name |             |
-| lb_fqdn               |             |
-| external_ip_reserved  |             |
+| Name                  | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| dns_managed_zone_name | your google managed zone name                                |
+| lb_fqdn               | the FQDN of your load balancer with which you access your website |
+| external_ip_reserved  | the ip address which will be mapped to the FQDN in the configuration of your gcp public zone |
 
 
 
