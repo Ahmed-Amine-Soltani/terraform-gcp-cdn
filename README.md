@@ -94,9 +94,8 @@ Before starting you’ll need some pre-existing configurations:
 
 
 
-##### Enable API's
+##### 
 
 ------
 
-In order to operate with the Service Account you must activate the following API on the project where the Service Account was created:
-
+See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information
