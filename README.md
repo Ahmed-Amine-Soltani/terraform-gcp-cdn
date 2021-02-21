@@ -106,5 +106,5 @@ Before starting you’ll need some pre-existing configurations:
 
 ------
 
-See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information
+See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information.
 
