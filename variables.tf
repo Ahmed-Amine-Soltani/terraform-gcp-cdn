@@ -1,16 +1,3 @@
-variable "google_compute_project_default_network_tier" {
-  type        = string
-  description = "The default network tier to be configured for the project. This field can take the following values: PREMIUM or STANDARD."
-  default     = "PREMIUM"
-}
-
-variable "google_compute_global_address_type" {
-  type        = string
-  description = "The type of the address to reserve."
-  default     = "EXTERNAL"
-}
-
-
 variable "dns_name" {
   type        = string
   description = "this dns_name will be concatenated with the domain name of your public zone to create the FQDN of your load balancer."
@@ -29,6 +16,18 @@ variable "google_storage_bucket_name" {
   default     = ""
 }
 
+variable "google_compute_project_default_network_tier" {
+  type        = string
+  description = "The default network tier to be configured for the project. This field can take the following values: PREMIUM or STANDARD."
+  default     = "PREMIUM"
+}
+
+variable "google_compute_global_address_type" {
+  type        = string
+  description = "The type of the address to reserve."
+  default     = "EXTERNAL"
+}
+
 variable "google_storage_bucket" {
   type = list(object({
     location                    = string
@@ -38,7 +37,6 @@ variable "google_storage_bucket" {
     main_page_suffix            = string
     not_found_page              = string
   }))
-  description = "the bucket configuration"
   default = [
     {
       location                    = "australia-southeast1"

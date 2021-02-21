@@ -70,7 +70,7 @@ Then perform the following commands on the root folder:
 | google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed. | `string` | "STANDARD"             | no       |
 | google_storage_bucket.force_destroy         | When deleting a bucket, this boolean option will delete all contained objects. | `bool`   | true                   | no       |
 | google_storage_bucket.main_page_suffix      | the main page suffix behaves as the bucket's directory index. | `string` | "index.html            | no       |
-| google_storage_bucket.not_found_page        | he custom object to return when a requested resource is not found. | `string` | "404.html"             | no       |
+| google_storage_bucket.not_found_page        | the custom object to return when a requested resource is not found. | `string` | "404.html"             | no       |
 | google_compute_project_default_network_tier | Network Service Tiers lets you optimize connectivity between systems on the internet and your Google Cloud instances. Premium Tier delivers traffic on Google's premium backbone. | `string` | "PREMIUM"              | no       |
 | google_compute_global_address_type          | Use global external addresses for GFE-based external HTTP(S) load balancers in Premium Tier. | `string` | "EXTERNAL"             | no       |
 
