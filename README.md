@@ -16,13 +16,13 @@ This modules makes it easy to host a static website on Cloud Storage bucket for 
 
 The ressources that will be created in your project:
 
-- An external IP address  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) [link](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static)
+- An external IP address  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) [link](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static) .
 
-- An entry in Cloud DNS to map the IP address to the domain name [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) [link](https://cloud.google.com/dns/docs/tutorials/create-domain-tutorial#set-up-domain)
-- A GCS bucket [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) [link](https://cloud.google.com/storage/docs/hosting-static-website)
-- A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) 
-- A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-http-lb)
-- A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs)
+- An entry in Cloud DNS to map the IP address to the domain name [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) [link](https://cloud.google.com/dns/docs/tutorials/create-domain-tutorial#set-up-domain) .
+- A GCS bucket [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) [link](https://cloud.google.com/storage/docs/hosting-static-website) .
+- A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) .
+- A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-htt .p-lb)
+- A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) .
 
 
 
@@ -46,13 +46,13 @@ module "cdn" {
 
 Then perform the following commands on the root folder:
 
-- `terraform init` to get the plugins
+- `terraform init` to get the plugins.
 
-- `terraform plan` to see the infrastructure plan
+- `terraform plan` to see the infrastructure plan.
 
-- `terraform apply` to apply the infrastructure build
+- `terraform apply` to apply the infrastructure build.
 
-- `terraform destroy` to destroy the built infrastructure
+- `terraform destroy` to destroy the built infrastructure.
 
   
 
@@ -65,7 +65,6 @@ Then perform the following commands on the root folder:
 | dns_name                                    | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer. | `string` | ""                     | yes      |
 | google_dns_managed_zone_name                | your google managed zone name.                               | `string` | ""                     | yes      |
 | google_storage_bucket_name                  | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
-| folder_path                                 | the path of the folder which contains the files of your website | `string` | ""                     | yes      |
 | google_storage_bucket.location              | where the bucket data will be permanently stored.            | `string` | "australia-southeast1" | no       |
 | google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed. | `string` | "STANDARD"             | no       |
 | google_storage_bucket.force_destroy         | When deleting a bucket, this boolean option will delete all contained objects. | `bool`   | true                   | no       |
@@ -92,18 +91,17 @@ Then perform the following commands on the root folder:
 
 Before starting you’ll need some pre-existing configurations:
 
-- An existing GCP account linked to a billing account
-- An existing GCP project
-- A service account with a key
-- Terraform installed and configured on your machine
-- A domain name managed in Cloud DNS (Public Zone)
-- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
+- An existing GCP account linked to a billing account.
+- An existing GCP project.
+- A service account with a key.
+- Terraform installed and configured on your machine.
+- A domain name managed in Cloud DNS (Public Zone).
+- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification) .
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
-
-
 
 ##### 
 
 ------
 
 See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information
+

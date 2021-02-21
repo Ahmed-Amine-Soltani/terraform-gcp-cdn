@@ -22,15 +22,13 @@ Before starting you’ll need some pre-existing configurations:
 - Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 
-- [gsutils](https://cloud.google.com/storage/docs/gsutil_install#install) command-line tool 
-
 
 
 #### Prepare Terraform
 
 ------
 
-You need to configure your Terraform to use the GCP and GCP beta  provider first . Don’t forget to  change your variables
+We need to configure your Terraform to use the GCP and GCP beta  provider first . Don’t forget to  change your variables
 
 ```hcl
 terraform {
@@ -95,24 +93,6 @@ resource "google_storage_bucket_iam_member" "member" {
 }
 ```
 
-using gsutils we can upload files to the bucket by specifying the path of the folder that contains the files 
-
-```hcl
-# Upload files to the bucket
-resource "null_resource" "upload_folder_content" {
-  triggers = {
-    file_hashes = jsonencode({
-      for fn in fileset(var.folder_path, "**") :
-      fn => filesha256("${var.folder_path}/${fn}")
-    })
-  }
-
-  provisioner "local-exec" {
-    command = "gsutil cp -r ${var.folder_path}/* gs://${google_storage_bucket.bucket.name}/"
-  }
-}
-```
-
 
 
 #### Network configuration
@@ -163,7 +143,7 @@ resource "google_dns_record_set" "cname" {
 
 ------
 
-we finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
+We finally create HTTPS LoadBalancer, the CDN, and map them to serve the bucket content .
 
 <img src=.images/load-balancer.png alt="load-balancer" border="0">
 
@@ -214,7 +194,7 @@ resource "google_compute_backend_bucket" "default" {
 }
 ```
 
-HTTP LoadBalancer to redirect the traffic to your HTTPS load balancer.
+HTTP LoadBalancer to redirect the traffic to our HTTPS load balancer.
 
 ```hcl
 # GCP forwarding rule http to https
@@ -248,7 +228,7 @@ resource "google_compute_url_map" "static-website-forwording" {
 
 ------
 
-
+We can declare its variables in the **variables.tf** file or directly in the module block 
 
 ```hcl
 variable "dns_name" {
@@ -284,15 +264,15 @@ variable "google_storage_bucket_name" {
 
 ------
 
-The **ressources** that will be created in your project:
+The **ressources** that will be created in the chosen project :
 
-- An external IP address  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) [link](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static)
+- An external IP address  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) [link](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static) .
 
-- An entry in Cloud DNS to map the IP address to the domain name [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) [link](https://cloud.google.com/dns/docs/tutorials/create-domain-tutorial#set-up-domain)
-- A GCS bucket [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) [link](https://cloud.google.com/storage/docs/hosting-static-website)
-- A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) 
-- A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-http-lb)
-- A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs)
+- An entry in Cloud DNS to map the IP address to the domain name [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) [link](https://cloud.google.com/dns/docs/tutorials/create-domain-tutorial#set-up-domain) .
+- A GCS bucket [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) [link](https://cloud.google.com/storage/docs/hosting-static-website) .
+- A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) .
+- A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-http-lb) .
+- A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) .
 
 
 
@@ -300,11 +280,11 @@ The **ressources** that will be created in your project:
 
 ------
 
-you can use the gcp console 
+We can use the gcp console  to upload the files
 
 <img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
 
-or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) you can use 
+or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) we can use **gsutil** command
 
 ```bash
 $ gsutil cp -r folder-path/* gs://bucket-name/
@@ -316,10 +296,10 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 ------
 
-Check if everything is working as it should.
+Check if everything is working as it should, the FQDN will be mapped directly to the **index.html** page . the FQDN is the concatenation of dns_name that you enter as a variable and the dns name of your public GCP zone .
 
 <img src=.images/test-the-website-prefix.png alt="gcp-cdn-architecture" border="0" />
 
-
+Here we test the behavior when trying to access a page that does not exist in our bucket .
 
 <img src=.images/not-found-page.png alt="gcp-cdn-architecture" border="0" />

@@ -49,10 +49,3 @@ variable "google_storage_bucket" {
     }
   ]
 }
-
-variable "folder_path" {
-  type        = string
-  description = "Path to your folder"
-  default     = ""
-
-}
