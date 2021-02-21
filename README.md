@@ -1,5 +1,3 @@
-
-
 # <p align="center"> Terraform CDN Module </p> 
 
 
@@ -30,6 +28,8 @@ The ressources that will be created in your project:
 
 ### Usage
 
+------
+
 You can go to the examples folder, however the usage of the module could be like this in your own main.tf file:
 
 ```hcl
@@ -59,6 +59,8 @@ Then perform the following commands on the root folder:
 
 ------
 
+
+
 | Name                                        | Description                                                  | Type     | Default                | Required |
 | :------------------------------------------ | ------------------------------------------------------------ | -------- | ---------------------- | -------- |
 | dns_name                                    | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer. | `string` | ""                     | yes      |
@@ -85,8 +87,6 @@ Then perform the following commands on the root folder:
 | dns_managed_zone_name | your google managed zone name.                               |
 | lb_fqdn               | the FQDN of your load balancer with which you access your website. |
 | external_ip_reserved  | the ip address which will be mapped to the FQDN in the configuration of your gcp public zone. |
-
-
 
 
 
