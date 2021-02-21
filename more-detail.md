@@ -8,7 +8,7 @@
 
 
 
-#### Requirements
+### Requirements
 
 ------
 
@@ -24,7 +24,7 @@ Before starting you’ll need some pre-existing configurations:
 
 
 
-#### Prepare Terraform
+### Prepare Terraform
 
 ------
 
@@ -65,7 +65,7 @@ provider "google-beta" {
 
 
 
-#### Bucket configuration
+### Bucket configuration
 
 ------
 
@@ -95,7 +95,7 @@ resource "google_storage_bucket_iam_member" "member" {
 
 
 
-#### Network configuration
+### Network configuration
 
 ------
 
@@ -139,7 +139,7 @@ resource "google_dns_record_set" "cname" {
 
 
 
-#### LoadBalancer and CDN creation
+### LoadBalancer and CDN creation
 
 ------
 
@@ -224,7 +224,7 @@ resource "google_compute_url_map" "static-website-forwording" {
 
 
 
-#### Variables 
+### Variables 
 
 ------
 
@@ -256,7 +256,7 @@ variable "google_storage_bucket_name" {
 
 
 
-#### Architecture
+### Architecture
 
 ------
 
@@ -276,7 +276,7 @@ The **ressources** that will be created in the chosen project :
 
 
 
-#### Publish the website
+### Publish the website
 
 ------
 
@@ -292,7 +292,7 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 
 
-#### Test the website
+### Test the website
 
 ------
 
