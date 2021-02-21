@@ -21,6 +21,7 @@ Before starting you’ll need some pre-existing configurations:
 - A domain name managed in Cloud DNS (Public Zone)
 - Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
 - Some files to upload to the bucket , at least an index page `index.html` and a 404 page `404.html`.
+- [gsutil](https://cloud.google.com/storage/docs/gsutil_install) command-line tool.
 
 
 
@@ -94,6 +95,24 @@ resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.bucket.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
+}
+```
+
+To  copy folders from local server to Google storage bucket
+
+```hcl
+# Upload files to the bucket
+resource "null_resource" "upload_folder_content" {
+  triggers = {
+    file_hashes = jsonencode({
+      for fn in fileset(var.folder_path, "**") :
+      fn => filesha256("${var.folder_path}/${fn}")
+    })
+  }
+
+  provisioner "local-exec" {
+    command = "gsutil cp -r ${var.folder_path}/* gs://${google_storage_bucket.bucket.name}/"
+  }
 }
 ```
 
@@ -252,6 +271,12 @@ variable "google_storage_bucket_name" {
   description = "bucket name"
   default     = "test.detect.tn"
 }
+
+variable "folder_path" {
+  type        = string
+  description = "Path to your folder"
+  default     = "/path/to/your/folder"
+}
 ```
 
 
@@ -277,22 +302,6 @@ The **ressources** that will be created in the chosen project :
 - A https external load balancer with CDN  [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) [link](https://cloud.google.com/load-balancing/docs/https) .
 - A http external load balancer to redirect HTTP traffic to HTTPS [link]()  [link](https://cloud.google.com/cdn/docs/setting-up-http-https-redirect#partial-http-lb) .
 - A managed certificate for HTTPS [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) [link](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs) .
-
-
-
-### Publish the website
-
-------
-
-We can use the gcp console  to upload the files
-
-<img src=.images/upload-files-to-gcp-bucket.png alt="load-balancer" border="0">
-
-or if you have already installed [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) we can use **gsutil** command
-
-```bash
-$ gsutil cp -r folder-path/* gs://bucket-name/
-```
 
 
 
