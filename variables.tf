@@ -37,6 +37,7 @@ variable "google_storage_bucket" {
     main_page_suffix            = string
     not_found_page              = string
   }))
+  description = "the bucket configuration"
   default = [
     {
       location                    = "australia-southeast1"
