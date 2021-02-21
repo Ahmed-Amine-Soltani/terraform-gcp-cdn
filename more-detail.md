@@ -20,7 +20,7 @@ Before starting you’ll need some pre-existing configurations:
 - Terraform installed and configured on your machine
 - A domain name managed in Cloud DNS (Public Zone)
 - Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
-- Some files to upload to the bucket , at least an index page `index.html`and a 404 page `404.html`.
+- Some files to upload to the bucket , at least an index page `index.html` and a 404 page `404.html`.
 
 
 
@@ -237,7 +237,7 @@ We can declare the variables in the **variables.tf** file or directly in the mod
 ```hcl
 variable "dns_name" {
   type        = string
-  description = "The dns name to create which point to the CDN"
+  description = "this dns_name will be concatenated with the domain name of your public zone to create the FQDN of your load balancer."
   default     = "lb"
 }
 
@@ -300,7 +300,7 @@ $ gsutil cp -r folder-path/* gs://bucket-name/
 
 ------
 
-Check if everything is working as it should, the FQDN will be mapped directly to the **index.html** page . the FQDN is the concatenation of dns_name that you enter as a variable and the dns name of your public GCP zone .
+Check if everything is working as it should be, the FQDN will be mapped directly to the **index.html** page . the FQDN is the concatenation of dns_name that you enter as a variable and the dns name of your public GCP zone .
 
 <img src=.images/test-the-website-prefix.png alt="gcp-cdn-architecture" border="0" />
 
