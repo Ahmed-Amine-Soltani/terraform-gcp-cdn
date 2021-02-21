@@ -47,14 +47,13 @@ module "cdn" {
 Then perform the following commands on the root folder:
 
 - `terraform init` to get the plugins.
-
 - `terraform plan` to see the infrastructure plan.
-
 - `terraform apply` to apply the infrastructure build.
-
 - `terraform destroy` to destroy the built infrastructure.
 
-  
+
+
+
 
 ##### Inputs
 
@@ -73,6 +72,10 @@ Then perform the following commands on the root folder:
 | google_compute_project_default_network_tier | Network Service Tiers lets you optimize connectivity between systems on the internet and your Google Cloud instances. Premium Tier delivers traffic on Google's premium backbone. | `string` | "PREMIUM"              | no       |
 | google_compute_global_address_type          | Use global external addresses for GFE-based external HTTP(S) load balancers in Premium Tier. | `string` | "EXTERNAL"             | no       |
 
+
+
+
+
 ##### Outputs
 
 ------
@@ -82,6 +85,8 @@ Then perform the following commands on the root folder:
 | dns_managed_zone_name | your google managed zone name.                               |
 | lb_fqdn               | the FQDN of your load balancer with which you access your website. |
 | external_ip_reserved  | the ip address which will be mapped to the FQDN in the configuration of your gcp public zone. |
+
+
 
 
 
@@ -98,8 +103,6 @@ Before starting you’ll need some pre-existing configurations:
 - A domain name managed in Cloud DNS (Public Zone).
 - Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification) .
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
-
-##### 
 
 ------
 
