@@ -28,7 +28,7 @@ The ressources that will be created in your project:
 
 
 
-#### Usage
+### Usage
 
 You can go to the examples folder, however the usage of the module could be like this in your own main.tf file:
 
@@ -55,7 +55,7 @@ Then perform the following commands on the root folder:
 
 
 
-##### Inputs
+### Inputs
 
 ------
 
@@ -76,7 +76,7 @@ Then perform the following commands on the root folder:
 
 
 
-##### Outputs
+### Outputs
 
 ------
 
@@ -90,7 +90,7 @@ Then perform the following commands on the root folder:
 
 
 
-##### Requirements
+### Requirements
 
 ------
 
