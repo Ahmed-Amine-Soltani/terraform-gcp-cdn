@@ -22,7 +22,7 @@ Before starting you’ll need some pre-existing configurations:
 - Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 
-
+- [gsutils](https://cloud.google.com/storage/docs/gsutil_install#install) command-line tool 
 
 
 
@@ -92,6 +92,24 @@ resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.bucket.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
+}
+```
+
+using gsutils we can upload files to the bucket by specifying the path of the folder that contains the files 
+
+```hcl
+# Upload files to the bucket
+resource "null_resource" "upload_folder_content" {
+  triggers = {
+    file_hashes = jsonencode({
+      for fn in fileset(var.folder_path, "**") :
+      fn => filesha256("${var.folder_path}/${fn}")
+    })
+  }
+
+  provisioner "local-exec" {
+    command = "gsutil cp -r ${var.folder_path}/* gs://${google_storage_bucket.bucket.name}/"
+  }
 }
 ```
 

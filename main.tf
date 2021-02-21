@@ -55,6 +55,20 @@ resource "google_storage_bucket_iam_member" "member" {
   member = "allUsers"
 }
 
+# Upload files to the bucket
+resource "null_resource" "upload_folder_content" {
+  triggers = {
+    file_hashes = jsonencode({
+      for fn in fileset(var.folder_path, "**") :
+      fn => filesha256("${var.folder_path}/${fn}")
+    })
+  }
+
+  provisioner "local-exec" {
+    command = "gsutil cp -r ${var.folder_path}/* gs://${google_storage_bucket.bucket.name}/"
+  }
+
+}
 ############################# LoadBalancer and CDN creation #############################
 # GCP forwarding rule
 resource "google_compute_global_forwarding_rule" "static-website" {
