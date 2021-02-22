@@ -112,6 +112,22 @@ In order to operate with the Service Account you must activate the following API
 - Cloud DNS API
 - Compute Engine API
 
+### Service account roles to add 
+
+------
+
+- Compute Admin          
+
+- Compute Load Balancer Admin          
+
+- DNS Administrator          
+
+- CA Service Operation Manager          
+
+- Storage Admin          
+
+
+
 ------
 
 See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information.
