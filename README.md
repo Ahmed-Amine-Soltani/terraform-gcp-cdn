@@ -107,6 +107,15 @@ Before starting you’ll need some pre-existing configurations:
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 - [gsutil](https://cloud.google.com/storage/docs/gsutil_install) command-line tool.
 
+
+
+**Enable APIs**
+
+In order to operate with the Service Account you must activate the following APIs on the project where the Service Account was created:
+
+- Cloud DNS API
+- Compute Engine API
+
 ------
 
 See the module [documentation](https://github.com/Ahmed-Amine-Soltani/terraform-gcp-cdn/blob/master/more-detail.md) for more information.
