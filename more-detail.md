@@ -26,10 +26,25 @@ Before starting you’ll need some pre-existing configurations:
 In order to operate with the Service Account you must activate the following APIs on the project where the Service Account was created:
 
 - Cloud DNS API
-
 - Compute Engine API
 
-  
+
+
+### Service account permissions to add 
+
+------
+
+- Compute Admin          
+
+- Compute Load Balancer Admin          
+
+- DNS Administrator          
+
+- CA Service Operation Manager          
+
+- Storage Admin          
+
+
 
 ### Prepare Terraform
 
