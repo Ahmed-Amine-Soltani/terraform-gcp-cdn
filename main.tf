@@ -1,3 +1,9 @@
+## bucket name
+## variable
+## break down the main into sub-part lb.tf / cdn.tf / bucket.tf
+
+
+
 ############################# Network configuration #############################
 # The default network tier to be configured for the project
 resource "google_compute_project_default_network_tier" "default" {
@@ -89,17 +95,6 @@ resource "google_compute_target_https_proxy" "static-website" {
   ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
 }
 
-# Create HTTPS certificate
-resource "google_compute_managed_ssl_certificate" "default" {
-  name = "static-website-cert"
-
-  managed {
-    domains = [
-      google_dns_record_set.a.name,
-      google_dns_record_set.cname.name
-    ]
-  }
-}
 
 # GCP URL MAP
 resource "google_compute_url_map" "static-website" {
@@ -113,6 +108,19 @@ resource "google_compute_backend_bucket" "default" {
   bucket_name = google_storage_bucket.bucket.name
   enable_cdn  = true
 }
+
+# Create HTTPS certificate
+resource "google_compute_managed_ssl_certificate" "default" {
+  name = "static-website-cert"
+
+  managed {
+    domains = [
+      google_dns_record_set.a.name,
+      google_dns_record_set.cname.name
+    ]
+  }
+}
+
 
 ############################# HTTP-to-HTTPS redirect for HTTP(S) Load Balancing ############################
 # GCP forwarding rule http to https
