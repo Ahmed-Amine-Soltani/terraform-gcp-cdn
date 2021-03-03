@@ -19,7 +19,6 @@ Before starting you’ll need some pre-existing configurations:
 - A service account with a key
 - Terraform installed and configured on your machine
 - A domain name managed in Cloud DNS (Public Zone)
-- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification)
 - Some files to upload to the bucket , at least an index page `index.html` and a 404 page `404.html`.
 - [gsutil](https://cloud.google.com/storage/docs/gsutil_install) command-line tool.
 
@@ -92,8 +91,6 @@ provider "google-beta" {
 ------
 
 We need then to create a GCS bucket to host our static files. 
-
-The bucket name must be a syntactically valid DNS name verified . Examples of valid domain-named buckets include `example.com`, `buckets.example.com`  . 
 
 The `main_page_suffix` is set to `index.html` and `not_found_page` is set to `404.html`
 

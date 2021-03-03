@@ -66,7 +66,7 @@ Then perform the following commands on the root folder:
 | :------------------------------------------ | ------------------------------------------------------------ | -------- | ---------------------- | -------- |
 | dns_name                                    | this dns_name  will be concatenated with the domain name of your public zone to create the FQDN of your load balancer. | `string` | ""                     | yes      |
 | google_dns_managed_zone_name                | your google managed zone name.                               | `string` | ""                     | yes      |
-| google_storage_bucket_name                  | the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name. the recommended verification method is to verify domain ownership. | `string` | ""                     | yes      |
+| google_storage_bucket_name                  | the bucket name.                                             | `string` | ""                     | yes      |
 | folder_path                                 | the path of your folder which contains the files to upload   | `string` | ""                     | yes      |
 | google_storage_bucket.location              | where the bucket data will be permanently stored.            | `string` | "australia-southeast1" | no       |
 | google_storage_bucket.storage_class         | storage class you set for an object affects the object's availability . STANDARD storage is best for data that is frequently accessed. | `string` | "STANDARD"             | no       |
@@ -103,7 +103,6 @@ Before starting you’ll need some pre-existing configurations:
 - A service account with a key.
 - Terraform installed and configured on your machine.
 - A domain name managed in Cloud DNS (Public Zone).
-- Domain named bucket [verification](https://cloud.google.com/storage/docs/domain-name-verification) .
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 - [gsutil](https://cloud.google.com/storage/docs/gsutil_install) command-line tool.
 

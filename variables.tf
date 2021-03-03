@@ -12,7 +12,7 @@ variable "google_dns_managed_zone_name" {
 
 variable "google_storage_bucket_name" {
   type        = string
-  description = "the bucket name which must be in the form of domain name and you must establish that you are authorized to use the domain name."
+  description = "the bucket name."
   default     = ""
 }
 
