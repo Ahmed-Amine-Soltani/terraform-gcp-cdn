@@ -30,7 +30,7 @@ The ressources that will be created in your project:
 
 ------
 
-You can go to the examples folder, however the usage of the module could be like this in your own main.tf file:
+Basic usage of this module is as follows:
 
 ```hcl
 module "cdn" {
@@ -38,7 +38,7 @@ module "cdn" {
   version = "2.0.0"
   dns_name                     = "example"
   google_dns_managed_zone_name = "my-google-dns-managed-zone-name"
-  google_storage_bucket_name   = "example.bucket.mydnsname.com"
+  google_storage_bucket_name   = "my-bucket-name"
   folder_path                  = "/path/to/your/folder"
 }
 ```
@@ -106,24 +106,24 @@ Before starting you’ll need some pre-existing configurations:
 - Some files to upload to the bucket , least an index page `index.html`and a 404 page `404.html`.
 - [gsutil](https://cloud.google.com/storage/docs/gsutil_install) command-line tool.
 
-In order to operate with the Service Account you must activate the following APIs on the project where the Service Account was created:
+In order to operate with the Service Account you must activate the following **APIs** on the project where the Service Account was created:
 
-- Cloud DNS API
-- Compute Engine API
+- Cloud DNS API.
+- Compute Engine API.
 
 ### Service account roles to add 
 
 ------
 
-- Compute Admin          
+- Compute Admin.
 
-- Compute Load Balancer Admin          
+- Compute Load Balancer Admin.
 
-- DNS Administrator          
+- DNS Administrator.
 
-- CA Service Operation Manager          
+- CA Service Operation Manager.  
 
-- Storage Admin          
+- Storage Admin.
 
 
 
